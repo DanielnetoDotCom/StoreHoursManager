@@ -1,0 +1,16 @@
+<script>
+  async function checkStoreHours() {
+      const response = await fetch('/apps/store-hours/api/status');
+      const { isOpen } = await response.json();
+
+      const addToCartButton = document.querySelector('form[action*="/cart/add"] button');
+      if (addToCartButton) {
+          if (!isOpen) {
+              addToCartButton.disabled = true;
+              addToCartButton.innerText = "Store is Closed";
+          }
+      }
+  }
+
+  checkStoreHours();
+</script>

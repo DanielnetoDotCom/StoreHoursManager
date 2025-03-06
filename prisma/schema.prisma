@@ -30,3 +30,11 @@ model Session {
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
 }
+
+model StoreHours {
+  id         Int     @id @default(autoincrement())
+  shop       String  @unique
+  open_time  Int
+  close_time Int
+  timezone   String
+}

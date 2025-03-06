@@ -1,0 +1,10 @@
+{
+  "name": "storehours",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@shopify/ui-extensions": "2025.1.x",
+    "storehours": "file:"
+  }
+}
