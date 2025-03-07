@@ -31,9 +31,16 @@ export default function StoreHoursSettings() {
     return () => clearInterval(interval);
   }, [timezone]);
 
+  const getShop = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("shop") || sessionStorage.getItem("shop") || "default_shop";
+  };
+
   const fetchStoreHours = async () => {
     try {
-      const res = await fetch("/api/store-hours");
+      const shop = getShop();
+
+      const res = await fetch(`/api/store-hours?shop=${encodeURIComponent(shop)}`);
       if (!res.ok) throw new Error("Failed to fetch store hours");
 
       const data = await res.json();
@@ -42,17 +49,17 @@ export default function StoreHoursSettings() {
         const existingDay = data.hours.find(h => h.weekday === index);
         return existingDay
           ? {
-              weekday: index,
-              open_time: existingDay.open_time !== null ? String(existingDay.open_time).padStart(2, "0") + ":00" : "09:00",
-              close_time: existingDay.close_time !== null ? String(existingDay.close_time).padStart(2, "0") + ":00" : "17:00",
-              is_closed: existingDay.is_closed
-            }
+            weekday: index,
+            open_time: existingDay.open_time !== null ? String(existingDay.open_time).padStart(2, "0") + ":00" : "09:00",
+            close_time: existingDay.close_time !== null ? String(existingDay.close_time).padStart(2, "0") + ":00" : "17:00",
+            is_closed: existingDay.is_closed
+          }
           : {
-              weekday: index,
-              open_time: "09:00",
-              close_time: "17:00",
-              is_closed: false
-            };
+            weekday: index,
+            open_time: "09:00",
+            close_time: "17:00",
+            is_closed: false
+          };
       });
 
       setStoreHours(updatedStoreHours);
@@ -92,7 +99,10 @@ export default function StoreHoursSettings() {
     };
 
     try {
-      const response = await fetch("/api/store-hours", {
+
+      const shop = getShop();
+
+      const response = await fetch(`/api/store-hours?shop=${encodeURIComponent(shop)}`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
@@ -178,7 +188,7 @@ export default function StoreHoursSettings() {
               </Grid>
 
               {/* Save Button */}
-              <div style={{ textAlign: "center", marginTop: "20px"}}>
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
                 <Button submit variant="primary" fullWidth>Save Store Hours</Button>
               </div>
             </FormLayout>

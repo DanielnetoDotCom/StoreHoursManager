@@ -1,54 +1,102 @@
 <script>
   document.addEventListener("DOMContentLoaded", async function () {
-    const shop = "default_shop"; // Replace with dynamic shop identifier if needed
-    //const apiUrl = `/api/store-hours?shop=${shop}`;
+
+    // Select the Add to Cart & Buy It Now buttons
+    let addToCartButton = document.querySelector('.product-form__submit');
+    let buyItNowButton = document.querySelector('.shopify-payment-button__button');
+
+    // Store the original button text for restoration
+    let originalAddToCartText = addToCartButton ? addToCartButton.innerHTML : "";
+    let originalBuyItNowText = buyItNowButton ? buyItNowButton.innerHTML : "";
+
+    // Disable Buttons Function
+    function disableButtons() {
+      console.log("Store is currently closed. Disabling buttons...");
+
+      if (addToCartButton) {
+        addToCartButton.disabled = true;
+        addToCartButton.style.backgroundColor = "gray";
+        addToCartButton.style.opacity = "0.5";
+        addToCartButton.style.cursor = "not-allowed";
+        addToCartButton.innerHTML = "Store is Closed";
+      }
+
+      if (buyItNowButton) {
+        buyItNowButton.disabled = true;
+        buyItNowButton.style.backgroundColor = "gray";
+        buyItNowButton.style.opacity = "0.5";
+        buyItNowButton.style.cursor = "not-allowed";
+        buyItNowButton.innerHTML = "Store is Closed";
+      }
+    }
+    // Enable Buttons Function
+    function enableButtons() {
+      console.log("Store is open. Enabling buttons...");
+
+      if (addToCartButton) {
+        addToCartButton.disabled = false;
+        addToCartButton.style.backgroundColor = ""; // Reset to default
+        addToCartButton.style.opacity = "";
+        addToCartButton.style.cursor = "";
+        addToCartButton.innerHTML = originalAddToCartText; // Restore original text
+      }
+
+      if (buyItNowButton) {
+        buyItNowButton.disabled = false;
+        buyItNowButton.style.backgroundColor = ""; // Reset to default
+        buyItNowButton.style.opacity = "";
+        buyItNowButton.style.cursor = "";
+        buyItNowButton.innerHTML = originalBuyItNowText; // Restore original text
+      }
+    }
+
+    disableButtons();
+    const shop = "daniel-neto-test.myshopify.com"; // Use dynamic shop identifier if needed
     const apiUrl = `/apps/store-hours?shop=${shop}`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      if (!data || !data.open_time || !data.close_time) {
+      if (!data || !data.hours) {
         console.error("Failed to fetch store hours");
         return;
       }
 
-      let openHour = data.open_time; // Get from database
-      let closeHour = data.close_time; // Get from database
-      let timezone = data.timezone; // Store timezone if needed
+      const firstTimezone = data.hours[0].timezone;
+      // Get current time in America/Los_Angeles timezone
+      const now = new Date();
+      const localTime = now.toLocaleString("en-US", { timeZone: firstTimezone });
+      const currentDateTime = new Date(localTime);
+      const currentHour = currentDateTime.getHours();
+      const currentWeekday = currentDateTime.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
 
-      let currentHour = new Date().getHours(); // Local time of the browser
+      console.log(`Current Time in ${firstTimezone}: ${currentDateTime.toLocaleTimeString()} (${currentWeekday})`);
 
-      // Select the Add to Cart button
-      let addToCartButton = document.querySelector('.product-form__submit');
-      let buyItNowButton = document.querySelector('.shopify-payment-button__button');
-      console.log('currentHour', currentHour);
-      console.log('openHour', openHour);
-      console.log('closeHour', closeHour);
-      console.log('addToCartButton', addToCartButton);
-      console.log('buyItNowButton', buyItNowButton);
-      if (addToCartButton) {
-        if (currentHour < openHour || currentHour >= closeHour) {
-          // Disable the button
-          addToCartButton.disabled = true;
-          addToCartButton.style.backgroundColor = "gray";
-          addToCartButton.style.opacity = "0.5";
-          addToCartButton.style.cursor = "not-allowed";
-          addToCartButton.innerHTML = "Store is Closed";
+      // Find the store hours for today
+      const todayHours = data.hours.find(h => h.weekday === currentWeekday);
 
-          // Disable "Buy It Now" button as well
-          if (buyItNowButton) {
-            buyItNowButton.disabled = true;
-            buyItNowButton.style.backgroundColor = "gray";
-            buyItNowButton.style.opacity = "0.5";
-            buyItNowButton.style.cursor = "not-allowed";
-            buyItNowButton.innerHTML = "Store is Closed";
-          }
-        }
+      if (!todayHours) {
+        console.error("No store hours found for today");
+        return;
+      }
+
+      let isStoreClosed = todayHours.is_closed;
+      let openHour = todayHours.open_time;
+      let closeHour = todayHours.close_time;
+
+      console.log("Today’s Store Hours:", { openHour, closeHour, isStoreClosed });
+      console.log("Now Hours:", { currentHour });
+
+
+      // If store is closed for the entire day or outside working hours, disable buttons
+      if (isStoreClosed || currentHour < openHour || currentHour >= closeHour) {
+        disableButtons();
+      } else {
+        enableButtons();
       }
     } catch (error) {
       console.error("Error fetching store hours:", error);
     }
   });
-
 </script>

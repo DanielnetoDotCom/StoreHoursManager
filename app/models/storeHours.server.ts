@@ -7,12 +7,12 @@ export async function getStoreHours(shop: string) {
   console.log("Fetching store hours for shop:", shop);
 
   const results = await prisma.storeHours.findMany({
-    //where: { shop },
+    where: { shop },
     orderBy: [{ weekday: "asc" }],
   });
 
   console.log("getStoreHours:", shop);
-  console.log("Fetched results:", results); // Debugging output
+  console.log("Fetched results:", results.length); // Debugging output
   return results;
 }
 

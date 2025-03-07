@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "5819f87c8a2d4b1df4f992f6c9c944a9"
-application_url = "https://involving-camel-newton-eight.trycloudflare.com"
+application_url = "https://keith-turning-replica-requirements.trycloudflare.com"
 embedded = true
 name = "StoreHoursManager"
 handle = "storehoursmanager"
@@ -19,15 +19,15 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://involving-camel-newton-eight.trycloudflare.com/auth/callback",
-  "https://involving-camel-newton-eight.trycloudflare.com/auth/shopify/callback",
-  "https://involving-camel-newton-eight.trycloudflare.com/api/auth/callback"
+  "https://keith-turning-replica-requirements.trycloudflare.com/auth/callback",
+  "https://keith-turning-replica-requirements.trycloudflare.com/auth/shopify/callback",
+  "https://keith-turning-replica-requirements.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
 embedded = false
 
 [app_proxy]
-url = "https://involving-camel-newton-eight.trycloudflare.com/api/store-hours"
+url = "https://keith-turning-replica-requirements.trycloudflare.com/api/store-hours"
 subpath = "store-hours"
 prefix = "apps"
