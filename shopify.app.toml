@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "bd41be9749329c00f7d2ba87fb6eefc0"
-application_url = "https://sheffield-dutch-fax-dietary.trycloudflare.com"
+client_id = "5819f87c8a2d4b1df4f992f6c9c944a9"
+application_url = "https://involving-camel-newton-eight.trycloudflare.com"
 embedded = true
 name = "StoreHoursManager"
 handle = "storehoursmanager"
@@ -13,24 +13,21 @@ automatically_update_urls_on_dev = true
 [webhooks]
 api_version = "2025-01"
 
-  [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
-  topics = [ "app/scopes_update" ]
-  uri = "/webhooks/app/scopes_update"
-
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://sheffield-dutch-fax-dietary.trycloudflare.com/auth/callback",
-  "https://sheffield-dutch-fax-dietary.trycloudflare.com/auth/shopify/callback",
-  "https://sheffield-dutch-fax-dietary.trycloudflare.com/api/auth/callback"
+  "https://involving-camel-newton-eight.trycloudflare.com/auth/callback",
+  "https://involving-camel-newton-eight.trycloudflare.com/auth/shopify/callback",
+  "https://involving-camel-newton-eight.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
 embedded = false
+
+[app_proxy]
+url = "https://involving-camel-newton-eight.trycloudflare.com/api/store-hours"
+subpath = "store-hours"
+prefix = "apps"

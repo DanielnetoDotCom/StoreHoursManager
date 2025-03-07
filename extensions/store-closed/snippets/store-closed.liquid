@@ -1,0 +1,54 @@
+<script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    const shop = "default_shop"; // Replace with dynamic shop identifier if needed
+    //const apiUrl = `/api/store-hours?shop=${shop}`;
+    const apiUrl = `/apps/store-hours?shop=${shop}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      if (!data || !data.open_time || !data.close_time) {
+        console.error("Failed to fetch store hours");
+        return;
+      }
+
+      let openHour = data.open_time; // Get from database
+      let closeHour = data.close_time; // Get from database
+      let timezone = data.timezone; // Store timezone if needed
+
+      let currentHour = new Date().getHours(); // Local time of the browser
+
+      // Select the Add to Cart button
+      let addToCartButton = document.querySelector('.product-form__submit');
+      let buyItNowButton = document.querySelector('.shopify-payment-button__button');
+      console.log('currentHour', currentHour);
+      console.log('openHour', openHour);
+      console.log('closeHour', closeHour);
+      console.log('addToCartButton', addToCartButton);
+      console.log('buyItNowButton', buyItNowButton);
+      if (addToCartButton) {
+        if (currentHour < openHour || currentHour >= closeHour) {
+          // Disable the button
+          addToCartButton.disabled = true;
+          addToCartButton.style.backgroundColor = "gray";
+          addToCartButton.style.opacity = "0.5";
+          addToCartButton.style.cursor = "not-allowed";
+          addToCartButton.innerHTML = "Store is Closed";
+
+          // Disable "Buy It Now" button as well
+          if (buyItNowButton) {
+            buyItNowButton.disabled = true;
+            buyItNowButton.style.backgroundColor = "gray";
+            buyItNowButton.style.opacity = "0.5";
+            buyItNowButton.style.cursor = "not-allowed";
+            buyItNowButton.innerHTML = "Store is Closed";
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching store hours:", error);
+    }
+  });
+
+</script>

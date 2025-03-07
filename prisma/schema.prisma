@@ -33,8 +33,12 @@ model Session {
 
 model StoreHours {
   id         Int     @id @default(autoincrement())
-  shop       String  @unique
-  open_time  Int
-  close_time Int
+  shop       String
+  weekday    Int     // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  open_time  Int?
+  close_time Int?
   timezone   String
+  is_closed  Boolean @default(false)
+
+  @@unique([shop, weekday]) // Ensures one entry per shop per weekday
 }

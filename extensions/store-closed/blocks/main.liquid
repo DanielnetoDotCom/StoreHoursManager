@@ -1,0 +1,14 @@
+{% comment %} Inject JavaScript on the product page {% endcomment %}
+{% if template == 'product' %}
+  {% render 'store-closed' %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Store Closed",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
