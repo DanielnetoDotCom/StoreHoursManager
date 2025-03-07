@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "bd41be9749329c00f7d2ba87fb6eefc0"
-application_url = "https://does-humanity-titanium-boolean.trycloudflare.com"
+application_url = "https://sheffield-dutch-fax-dietary.trycloudflare.com"
 embedded = true
 name = "StoreHoursManager"
 handle = "storehoursmanager"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://does-humanity-titanium-boolean.trycloudflare.com/auth/callback",
-  "https://does-humanity-titanium-boolean.trycloudflare.com/auth/shopify/callback",
-  "https://does-humanity-titanium-boolean.trycloudflare.com/api/auth/callback"
+  "https://sheffield-dutch-fax-dietary.trycloudflare.com/auth/callback",
+  "https://sheffield-dutch-fax-dietary.trycloudflare.com/auth/shopify/callback",
+  "https://sheffield-dutch-fax-dietary.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
