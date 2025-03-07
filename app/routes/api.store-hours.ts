@@ -1,31 +1,18 @@
-import { json, type ActionFunction, type LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { getStoreHours, updateStoreHours } from "../models/storeHours.server";
 
-let storeHours = {
-  open_time: 9,
-  close_time: 17,
-  timezone: "America/Los_Angeles",
-};
+export async function loader({ request }: { request: Request }) {
+    const url = new URL(request.url);
+    const shop = url.searchParams.get("shop") || "default_shop";
 
-// Loader function to fetch store hours
-export const loader: LoaderFunction = async () => {
-  return json(storeHours);
-};
+    const storeHours = await getStoreHours(shop);
+    return json(storeHours);
+}
 
-// Action function to update store hours
-export const action: ActionFunction = async ({ request }: { request: Request }) => {
-  if (request.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
+export async function action({ request }: { request: Request }) {
+    const shop = "default_shop"; // Replace with Shopify session handling
+    const body = await request.json();
 
-  try {
-    const data = await request.json();
-    storeHours = {
-      open_time: data.open_time,
-      close_time: data.close_time,
-      timezone: data.timezone,
-    };
-    return json({ success: true });
-  } catch (error) {
-    return json({ error: "Invalid data" }, { status: 400 });
-  }
-};
+    const updatedHours = await updateStoreHours(shop, body.open_time, body.close_time, body.timezone);
+    return json(updatedHours);
+}
