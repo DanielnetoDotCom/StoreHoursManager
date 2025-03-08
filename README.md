@@ -20,3 +20,8 @@ Create a Shopify application that disables the **"Add to Cart"** button on a mer
 https://shopify.dev/docs/api/functions/reference/cart-checkout-validation/graphql/common-objects/localtime
 
 https://shopify.dev/docs/api/functions/reference/cart-checkout-validation
+
+# Video Usage Demonstration
+
+https://github.com/user-attachments/assets/66e514eb-02ad-4cb9-b4f8-3d2674966aa2
+
