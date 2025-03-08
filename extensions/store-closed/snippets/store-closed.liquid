@@ -52,45 +52,19 @@
 
     disableButtons();
     const shop = "daniel-neto-test.myshopify.com"; // Use dynamic shop identifier if needed
-    const apiUrl = `/apps/store-hours?shop=${shop}`;
+    const apiUrl = `/apps/api/is-store-open?shop=${shop}`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      if (!data || !data.hours) {
+      if (!data) {
         console.error("Failed to fetch store hours");
         return;
       }
 
-      const firstTimezone = data.hours[0].timezone;
-      // Get current time in America/Los_Angeles timezone
-      const now = new Date();
-      const localTime = now.toLocaleString("en-US", { timeZone: firstTimezone });
-      const currentDateTime = new Date(localTime);
-      const currentHour = currentDateTime.getHours();
-      const currentWeekday = currentDateTime.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
-
-      console.log(`Current Time in ${firstTimezone}: ${currentDateTime.toLocaleTimeString()} (${currentWeekday})`);
-
-      // Find the store hours for today
-      const todayHours = data.hours.find(h => h.weekday === currentWeekday);
-
-      if (!todayHours) {
-        console.error("No store hours found for today");
-        return;
-      }
-
-      let isStoreClosed = todayHours.is_closed;
-      let openHour = todayHours.open_time;
-      let closeHour = todayHours.close_time;
-
-      console.log("Today’s Store Hours:", { openHour, closeHour, isStoreClosed });
-      console.log("Now Hours:", { currentHour });
-
-
       // If store is closed for the entire day or outside working hours, disable buttons
-      if (isStoreClosed || currentHour < openHour || currentHour >= closeHour) {
+      if (!data.isOpen) {
         disableButtons();
       } else {
         enableButtons();
