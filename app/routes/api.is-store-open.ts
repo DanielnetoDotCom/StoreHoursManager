@@ -15,14 +15,14 @@ export async function loader({ request }: { request: Request }) {
   }
 
   // Get the timezone from the first entry (assuming it's consistent across all days)
-  const timezone = storeHours[0].timezone || "UTC";
+  const timezone = "UTC";
 
   // Get current date and time in the store's timezone
 
   const now = new Date();
   const localTime = now.toLocaleString("en-US", { timeZone: timezone });
   const currentDateTime = new Date(localTime);
-  const currentWeekday = (currentDateTime.getDay() + 6) % 7; // Convert Sunday-Saturday (0-6) to Monday-Sunday (1-7) then adjust to (0-6)
+  const currentWeekday = currentDateTime.getDay(); // Convert Sunday-Saturday (0-6) to Monday-Sunday (1-7) then adjust to (0-6)
   const currentTime = currentDateTime.getHours() * 100 + currentDateTime.getMinutes(); // Convert to HHMM format
 
 
@@ -39,17 +39,22 @@ export async function loader({ request }: { request: Request }) {
     });
   }
 
+  var open_time = parseInt(todayHours.open_time+'00');
+  var close_time = parseInt(todayHours.close_time+'00');
+
   // Check if the current time is within open hours
   const isOpen = todayHours.open_time !== null && todayHours.close_time !== null &&
-    todayHours.open_time <= currentTime && currentTime <= todayHours.close_time;
+    open_time <= currentTime && currentTime <= close_time;
 
   return json({
     isOpen,
     message: isOpen ? "Store is open" : "Store is closed",
     timezone,
-    now: currentTime,
-    open_time: todayHours.open_time,
-    close_time: todayHours.close_time,
+    open_time: open_time,
+    close_time: close_time,
+    currentTime: currentTime,
+    currentWeekday: currentWeekday,
+    todayHours: todayHours
     //hours: storeHours
   });
 }
