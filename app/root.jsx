@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+console.log('---- app/root.jsx loaded');
 export default function App() {
   return (
     <html>

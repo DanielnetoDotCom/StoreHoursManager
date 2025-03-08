@@ -5,7 +5,10 @@ query RunInput {
     }
   }
   shop {
-    metafield(namespace: "store_status", key: "store_info") {
+    storeHours: metafield(namespace: "store_status", key: "store_info") {
+      value
+    }
+    currentTime: metafield(namespace: "store_status", key: "current_time") {
       value
     }
     localTime {

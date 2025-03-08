@@ -5,6 +5,7 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { isbot } from "isbot";
 import { addDocumentResponseHeaders } from "./shopify.server";
 
+console.log('---- app/entry.server.jsx loaded');
 export const streamTimeout = 5000;
 
 export default async function handleRequest(

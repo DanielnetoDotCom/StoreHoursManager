@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import {
-  Page, Card, Form, FormLayout, Select, Button, TextField, Text, Icon, Toast, Frame, Checkbox, BlockStack, InlineStack, Grid
+  Page, Card, Form, FormLayout, Button, TextField, Text, Icon, Toast, Frame, Checkbox, BlockStack, InlineStack, Grid
 } from "@shopify/polaris";
-import { ClockIcon, CalendarIcon, GlobeIcon } from "@shopify/polaris-icons";
-import { DateTime } from "luxon";
+import { ClockIcon } from "@shopify/polaris-icons";
 
 export default function StoreHoursSettings() {
   const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -16,20 +15,18 @@ export default function StoreHoursSettings() {
       is_closed: false,
     }))
   );
-  const [timezone, setTimezone] = useState("America/Los_Angeles");
   const [currentTime, setCurrentTime] = useState("");
   const [currentWeekday, setCurrentWeekday] = useState("");
   const [toastActive, setToastActive] = useState(false);
 
   useEffect(() => {
     fetchStoreHours();
-  }, []);
-
-  useEffect(() => {
     updateCurrentTime();
+
+    // Update the clock every second
     const interval = setInterval(updateCurrentTime, 1000);
     return () => clearInterval(interval);
-  }, [timezone]);
+  }, []);
 
   const getShop = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -39,7 +36,6 @@ export default function StoreHoursSettings() {
   const fetchStoreHours = async () => {
     try {
       const shop = getShop();
-
       const res = await fetch(`/api/store-hours?shop=${encodeURIComponent(shop)}`);
       if (!res.ok) throw new Error("Failed to fetch store hours");
 
@@ -49,30 +45,34 @@ export default function StoreHoursSettings() {
         const existingDay = data.hours.find(h => h.weekday === index);
         return existingDay
           ? {
-            weekday: index,
-            open_time: existingDay.open_time !== null ? String(existingDay.open_time).padStart(2, "0") + ":00" : "09:00",
-            close_time: existingDay.close_time !== null ? String(existingDay.close_time).padStart(2, "0") + ":00" : "17:00",
-            is_closed: existingDay.is_closed
-          }
+              weekday: index,
+              open_time: existingDay.open_time !== null ? String(existingDay.open_time).padStart(2, "0") + ":00" : "09:00",
+              close_time: existingDay.close_time !== null ? String(existingDay.close_time).padStart(2, "0") + ":00" : "17:00",
+              is_closed: existingDay.is_closed
+            }
           : {
-            weekday: index,
-            open_time: "09:00",
-            close_time: "17:00",
-            is_closed: false
-          };
+              weekday: index,
+              open_time: "09:00",
+              close_time: "17:00",
+              is_closed: false
+            };
       });
 
       setStoreHours(updatedStoreHours);
-      setTimezone(data.timezone || "America/Los_Angeles");
     } catch (error) {
       console.error("Error fetching store hours:", error);
     }
   };
 
   const updateCurrentTime = () => {
-    const now = DateTime.now().setZone(timezone);
-    setCurrentTime(now.toFormat("HH:mm:ss"));
-    setCurrentWeekday(now.toFormat("EEEE"));
+    const nowUtc = new Date();
+    const utcHours = String(nowUtc.getUTCHours()).padStart(2, "0");
+    const utcMinutes = String(nowUtc.getUTCMinutes()).padStart(2, "0");
+    const utcSeconds = String(nowUtc.getUTCSeconds()).padStart(2, "0");
+    const utcFormattedTime = `${utcHours}:${utcMinutes}:${utcSeconds}`;
+
+    setCurrentTime(utcFormattedTime);
+    setCurrentWeekday(weekdays[nowUtc.getUTCDay()]);
   };
 
   const handleChange = (index, field, value) => {
@@ -95,13 +95,10 @@ export default function StoreHoursSettings() {
         close_time: h.is_closed ? null : parseInt(h.close_time.split(":")[0]),
         is_closed: h.is_closed,
       })),
-      timezone,
     };
 
     try {
-
       const shop = getShop();
-
       const response = await fetch(`/api/store-hours?shop=${encodeURIComponent(shop)}`, {
         method: "POST",
         body: JSON.stringify(body),
@@ -122,18 +119,18 @@ export default function StoreHoursSettings() {
   return (
     <Frame>
       <Page title="Store Hours Settings">
-        {/* Current Time Display */}
+        {/* Current UTC Time Display */}
         <Card sectioned>
           <BlockStack gap="tight">
             <InlineStack align="space-between">
               <Text variant="headingMd">
-                <Icon source={ClockIcon} /> Current Time
+                <Icon source={ClockIcon} /> Current UTC Time
               </Text>
               <Text variant="bodyMd" fontWeight="bold">
-                {currentTime} ({timezone}) - {currentWeekday}
+                {currentTime} (UTC) - {currentWeekday}
               </Text>
             </InlineStack>
-            <Text variant="bodyMd">The current time in your selected timezone.</Text>
+            <Text variant="bodyMd">The current time is always stored and displayed in UTC.</Text>
           </BlockStack>
         </Card>
 
@@ -141,19 +138,7 @@ export default function StoreHoursSettings() {
         <Card sectioned>
           <Form onSubmit={saveSettings}>
             <FormLayout>
-              {/* Timezone Selection */}
-              <Select
-                label="Timezone"
-                options={[
-                  { label: "New York (EST)", value: "America/New_York" },
-                  { label: "Los Angeles (PST) - Default", value: "America/Los_Angeles" },
-                  { label: "London (GMT)", value: "Europe/London" },
-                ]}
-                onChange={(value) => setTimezone(value)}
-                value={timezone}
-              />
-
-              {/* Responsive Grid to avoid squished inputs */}
+              {/* Responsive Grid for Store Hours */}
               <Grid columns={{ xs: 1, sm: 2, md: 3, lg: 7, xl: 7 }} gap="loose">
                 {weekdays.map((day, index) => (
                   <Card key={index} sectioned>
