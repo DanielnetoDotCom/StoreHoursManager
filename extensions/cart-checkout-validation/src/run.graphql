@@ -1,0 +1,15 @@
+query RunInput {
+  cart {
+    lines {
+      quantity
+    }
+  }
+  shop {
+    metafield(namespace: "store_status", key: "store_info") {
+      value
+    }
+    localTime {
+      date
+    }
+  }
+}
