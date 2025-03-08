@@ -33,8 +33,8 @@ export async function loader({ request }: { request: Request }) {
     return json({
       isOpen: false, message: "Store is closed today", timezone,
       now: currentTime,
-      open_time: todayHours.open_time,
-      close_time: todayHours.close_time,
+      //open_time: todayHours.open_time,
+      //close_time: todayHours.close_time,
       //hours: storeHours
     });
   }
