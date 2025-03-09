@@ -12,14 +12,9 @@ Create a Shopify application that disables the **"Add to Cart"** button on a mer
 - Ensure the app works on **as many merchant's storefronts out of the box** as possible.  
 - **Prevent shoppers from checking out** during the "closed" time window, even if they’ve added a product to their cart during the “open” time window.  
 
-## Deliverables:
-- **Public GitHub repository** with the project source code.  
-- **Store link** for testing the implementation.
-
-## Make sure you use those
-https://shopify.dev/docs/api/functions/reference/cart-checkout-validation/graphql/common-objects/localtime
-
-https://shopify.dev/docs/api/functions/reference/cart-checkout-validation
+## Configuration Guide:
+For detailed configuration instructions, refer to the wiki:
+[How to Configure](https://github.com/DanielnetoDotCom/StoreHoursManager/wiki/How-to-configure)
 
 # Video Usage Demonstration
 
